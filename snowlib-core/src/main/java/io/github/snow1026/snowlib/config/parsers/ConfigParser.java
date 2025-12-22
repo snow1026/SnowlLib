@@ -2,6 +2,6 @@ package io.github.snow1026.snowlib.config.parsers;
 
 public interface ConfigParser<T> {
 
-    Class<T> getType();
+    Class<T> type();
     T parse(Object raw);
 }

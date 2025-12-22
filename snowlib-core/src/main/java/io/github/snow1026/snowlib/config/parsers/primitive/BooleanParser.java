@@ -5,7 +5,7 @@ import io.github.snow1026.snowlib.config.parsers.ConfigParser;
 public class BooleanParser implements ConfigParser<Boolean> {
 
     @Override
-    public Class<Boolean> getType() {
+    public Class<Boolean> type() {
         return Boolean.class;
     }
 

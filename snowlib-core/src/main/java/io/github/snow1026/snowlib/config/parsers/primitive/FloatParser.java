@@ -5,7 +5,7 @@ import io.github.snow1026.snowlib.config.parsers.ConfigParser;
 public class FloatParser implements ConfigParser<Float> {
 
     @Override
-    public Class<Float> getType() {
+    public Class<Float> type() {
         return Float.class;
     }
 

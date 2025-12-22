@@ -7,7 +7,7 @@ import java.util.UUID;
 public class UUIDParser implements ConfigParser<UUID> {
 
     @Override
-    public Class<UUID> getType() {
+    public Class<UUID> type() {
         return UUID.class;
     }
 

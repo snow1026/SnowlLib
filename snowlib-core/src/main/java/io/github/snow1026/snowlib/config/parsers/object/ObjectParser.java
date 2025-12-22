@@ -5,21 +5,17 @@ import io.github.snow1026.snowlib.config.parsers.GenericConfigParser;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class ObjectParser<T> implements GenericConfigParser<T> {
+import java.lang.reflect.Type;
 
-    private final Class<T> type;
-
-    public ObjectParser(Class<T> type) {
-        this.type = type;
-    }
+public record ObjectParser<T>(Class<T> type) implements GenericConfigParser<T> {
 
     @Override
-    public boolean supports(java.lang.reflect.Type t) {
+    public boolean supports(Type t) {
         return t instanceof Class<?> c && c.equals(type);
     }
 
     @Override
-    public T parse(Object raw, java.lang.reflect.Type t) {
+    public T parse(Object raw, Type t) {
         if (!(raw instanceof ConfigurationSection section))
             return null;
 

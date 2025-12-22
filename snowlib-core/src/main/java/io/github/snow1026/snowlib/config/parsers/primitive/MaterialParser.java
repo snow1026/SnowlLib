@@ -6,7 +6,7 @@ import org.bukkit.Material;
 public class MaterialParser implements ConfigParser<Material> {
 
     @Override
-    public Class<Material> getType() {
+    public Class<Material> type() {
         return Material.class;
     }
 

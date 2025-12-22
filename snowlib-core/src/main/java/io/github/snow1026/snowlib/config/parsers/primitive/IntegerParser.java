@@ -5,7 +5,7 @@ import io.github.snow1026.snowlib.config.parsers.ConfigParser;
 public class IntegerParser implements ConfigParser<Integer> {
 
     @Override
-    public Class<Integer> getType() {
+    public Class<Integer> type() {
         return Integer.class;
     }
 

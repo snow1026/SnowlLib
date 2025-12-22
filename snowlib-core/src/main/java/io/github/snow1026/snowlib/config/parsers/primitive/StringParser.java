@@ -5,7 +5,7 @@ import io.github.snow1026.snowlib.config.parsers.ConfigParser;
 public class StringParser implements ConfigParser<String> {
 
     @Override
-    public Class<String> getType() {
+    public Class<String> type() {
         return String.class;
     }
 

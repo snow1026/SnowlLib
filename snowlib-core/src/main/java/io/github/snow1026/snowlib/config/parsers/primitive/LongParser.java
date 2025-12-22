@@ -5,7 +5,7 @@ import io.github.snow1026.snowlib.config.parsers.ConfigParser;
 public class LongParser implements ConfigParser<Long> {
 
     @Override
-    public Class<Long> getType() {
+    public Class<Long> type() {
         return Long.class;
     }
 

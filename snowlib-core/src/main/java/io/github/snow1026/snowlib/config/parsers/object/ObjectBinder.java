@@ -10,8 +10,13 @@ import io.github.snow1026.snowlib.config.parsers.ConfigParser;
 import io.github.snow1026.snowlib.config.parsers.ParserRegistry;
 import io.github.snow1026.snowlib.exceptions.ConfigBindException;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public final class ObjectBinder {
 

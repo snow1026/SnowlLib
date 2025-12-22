@@ -4,8 +4,10 @@ import io.github.snow1026.snowlib.config.parsers.GenericConfigParser;
 import io.github.snow1026.snowlib.config.parsers.ParserUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GenericMapParser implements GenericConfigParser<Map<?, ?>> {
 

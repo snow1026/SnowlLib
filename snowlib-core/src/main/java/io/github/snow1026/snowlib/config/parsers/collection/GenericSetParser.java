@@ -4,8 +4,11 @@ package io.github.snow1026.snowlib.config.parsers.collection;
 import io.github.snow1026.snowlib.config.parsers.GenericConfigParser;
 import io.github.snow1026.snowlib.config.parsers.ParserUtil;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GenericSetParser implements GenericConfigParser<Set<?>> {
 

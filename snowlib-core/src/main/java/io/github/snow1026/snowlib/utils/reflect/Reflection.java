@@ -3,7 +3,9 @@ package io.github.snow1026.snowlib.utils.reflect;
 import io.github.snow1026.snowlib.utils.VersionUtil;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

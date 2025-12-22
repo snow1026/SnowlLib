@@ -1,6 +1,7 @@
 package io.github.snow1026.snowlib.config.cache;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public final class ConfigCache {

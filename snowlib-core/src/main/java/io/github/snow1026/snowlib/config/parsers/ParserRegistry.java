@@ -4,7 +4,6 @@ import io.github.snow1026.snowlib.config.parsers.collection.GenericListParser;
 import io.github.snow1026.snowlib.config.parsers.collection.GenericMapParser;
 import io.github.snow1026.snowlib.config.parsers.collection.GenericSetParser;
 import io.github.snow1026.snowlib.config.parsers.object.ObjectParser;
-import io.github.snow1026.snowlib.config.parsers.primitive.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package io.github.snow1026.snowlib.command;
+package io.github.snow1026.snowlib.commands;
 
 import io.github.snow1026.snowlib.exceptions.CommandParseException;
 import io.github.snow1026.snowlib.utils.reflect.Reflection;

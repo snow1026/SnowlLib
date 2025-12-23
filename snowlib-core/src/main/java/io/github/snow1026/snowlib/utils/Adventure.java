@@ -32,7 +32,7 @@ public class Adventure {
     }
 
     /**
-     * 문자열을 PlainText 문자열로 변환
+     * 문자열을 String 문자열로 변환
      *
      * @param input Component
      * @return 변환된 String
@@ -42,7 +42,7 @@ public class Adventure {
     }
 
     /**
-     * 문자열을 PlainText 문자열 리스트로 변환
+     * 문자열을 String 문자열 리스트로 변환
      *
      * @param input Component 리스트
      * @return 변환된 String 리스트

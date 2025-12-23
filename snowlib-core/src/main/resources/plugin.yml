@@ -3,3 +3,4 @@ version: 1.0.0
 main: io.github.snow1026.snowlib.SnowLibrary
 api-version: 1.20
 author: snow1026
+load: STARTUP

@@ -1,6 +1,6 @@
-package io.github.snow1026.snowlib.command
+package io.github.snow1026.snowlib.commands
 
-import io.github.snow1026.snowlib.command.argument.SuggestionProvider
+import io.github.snow1026.snowlib.commands.argument.SuggestionProvider
 import org.bukkit.command.CommandSender
 import java.util.function.Predicate
 

@@ -1,8 +1,8 @@
-package io.github.snow1026.snowlib.command;
+package io.github.snow1026.snowlib.commands;
 
-import io.github.snow1026.snowlib.command.argument.ArgumentParser;
-import io.github.snow1026.snowlib.command.argument.ArgumentParsers;
-import io.github.snow1026.snowlib.command.argument.SuggestionProvider;
+import io.github.snow1026.snowlib.commands.argument.ArgumentParser;
+import io.github.snow1026.snowlib.commands.argument.ArgumentParsers;
+import io.github.snow1026.snowlib.commands.argument.SuggestionProvider;
 import io.github.snow1026.snowlib.exceptions.CommandParseException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;

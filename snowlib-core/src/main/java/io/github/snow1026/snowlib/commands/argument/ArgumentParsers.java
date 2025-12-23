@@ -1,4 +1,4 @@
-package io.github.snow1026.snowlib.command.argument;
+package io.github.snow1026.snowlib.commands.argument;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

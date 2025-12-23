@@ -1,4 +1,4 @@
-package io.github.snow1026.snowlib.command;
+package io.github.snow1026.snowlib.commands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

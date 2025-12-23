@@ -4,6 +4,7 @@ package io.github.snow1026.snowlib.events;
 import io.github.snow1026.snowlib.internals.event.EventExecutorImpl;
 import io.github.snow1026.snowlib.internals.event.LambdaListener;
 import io.github.snow1026.snowlib.lifecycle.EventRegistry;
+import io.github.snow1026.snowlib.utils.reflect.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -88,17 +89,15 @@ public final class EventBuilder<T extends Event> {
         return this;
     }
 
-    /**
-     * 기본 등록 메서드 (SnowLib이 관리하는 플러그인에 등록)
-     */
     public EventHandle register() {
         return register(EventRegistry.getLifecycle().plugin());
     }
 
+    @SuppressWarnings("unchecked")
     public EventHandle register(Plugin plugin) {
         LambdaListener listener = new LambdaListener();
 
-        EventExecutorImpl<T> executor = new EventExecutorImpl<>(key, handler, filters, interceptors, pipelines, policy, forceCancel, executionLimit, expiry, debug);
+        EventExecutorImpl<T> executor = (EventExecutorImpl<T>) Reflection.getConstructor(EventExecutorImpl.class).invoke(key, handler, filters, interceptors, pipelines, policy, forceCancel, executionLimit, expiry, debug);
 
         Bukkit.getPluginManager().registerEvent(type, listener, priority, executor, plugin, ignoreCancelled);
 

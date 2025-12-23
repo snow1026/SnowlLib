@@ -10,12 +10,22 @@ import org.bukkit.inventory.Inventory;
 public final class GUIListener {
 
     public static void setup() {
+
+        // 1. InventoryClickEvent
         Events.listen(InventoryClickEvent.class, event -> {
             if (event.getInventory().getHolder() instanceof GUIImpl gui) {
                 Player player = (Player) event.getWhoClicked();
+
+                if (!gui.checkCooldown(player)) {
+                    event.setCancelled(true);
+                    return;
+                }
+
                 GUIClickEvent guiEvent = new GUIClickEvent(player, event);
 
-                if (gui.getClickHandler() != null) gui.getClickHandler().accept(guiEvent);
+                if (gui.getClickHandler() != null) {
+                    gui.getClickHandler().accept(guiEvent);
+                }
 
                 GUISlot slot = gui.getSlots().get(event.getRawSlot());
                 if (slot != null && slot.getClickHandler() != null) {
@@ -24,6 +34,7 @@ public final class GUIListener {
             }
         }).register();
 
+        // 2. InventoryOpenEvent
         Events.listen(InventoryOpenEvent.class, event -> {
             if (event.getInventory().getHolder() instanceof GUIImpl gui) {
                 if (gui.getOpenHandler() != null) {
@@ -32,14 +43,18 @@ public final class GUIListener {
             }
         }).register();
 
+        // 3. InventoryCloseEvent
         Events.listen(InventoryCloseEvent.class, event -> {
             if (event.getInventory().getHolder() instanceof GUIImpl gui) {
+                gui.stopUpdateTask();
+
                 if (gui.getCloseHandler() != null) {
                     gui.getCloseHandler().accept(new GUICloseEvent((Player) event.getPlayer(), event));
                 }
             }
         }).register();
 
+        // 4. InventoryDragEvent
         Events.listen(InventoryDragEvent.class, event -> {
             if (event.getInventory().getHolder() instanceof GUIImpl gui) {
                 if (gui.getDragHandler() != null) {
@@ -48,6 +63,7 @@ public final class GUIListener {
             }
         }).register();
 
+        // 5. InventoryInteractEvent
         Events.listen(InventoryInteractEvent.class, event -> {
             if (event.getInventory().getHolder() instanceof GUIImpl gui) {
                 if (gui.getInteractHandler() != null) {
@@ -56,6 +72,7 @@ public final class GUIListener {
             }
         }).register();
 
+        // 6. InventoryMoveItemEvent
         Events.listen(InventoryMoveItemEvent.class, event -> {
             Inventory holderInv = event.getSource().getHolder() instanceof GUIImpl ? event.getSource() :
                     (event.getDestination().getHolder() instanceof GUIImpl ? event.getDestination() : null);

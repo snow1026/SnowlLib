@@ -27,4 +27,16 @@ public interface GUI {
     void open(Player player);
 
     int getRows();
+
+    GUI applyLayout(String[] layout, java.util.Map<Character, Consumer<GUISlot>> bindings);
+
+    GUI cooldown(long millis);
+
+    void open(Player player, boolean saveHistory);
+
+    static void back(Player player) { GUIManager.back(player); }
+
+    GUI updateInterval(long ticks, Consumer<GUI> updateTask);
+
+    long getCooldown();
 }

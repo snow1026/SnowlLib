@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;
 
 public interface GUI {
+    
     static GUI create(int rows, String title) {
         return (GUI) Reflection.getConstructor(GUIImpl.class).invoke(rows, title);
     }

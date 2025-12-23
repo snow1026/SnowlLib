@@ -2,6 +2,7 @@ package io.github.snow1026.snowlib.gui
 
 import io.github.snow1026.snowlib.gui.events.*
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
@@ -39,6 +40,10 @@ class GUIDSL(val gui: GUI) {
     fun onDrag(handler: (GUIDragEvent) -> Unit) { gui.onDrag(handler) }
     fun onInteract(handler: (GUIInteractEvent) -> Unit) { gui.onInteract(handler) }
     fun onMoveItem(handler: (GUIMoveItemEvent) -> Unit) { gui.onMoveItem(handler) }
+
+    fun open(player: Player) { gui.open(player) }
+
+    fun getRows(): Int { return gui.rows }
 }
 
 class GUISlotDSL(val slot: GUISlot) {

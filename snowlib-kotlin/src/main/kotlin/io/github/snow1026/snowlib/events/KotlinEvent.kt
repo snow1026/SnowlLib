@@ -1,7 +1,6 @@
-package io.github.snow1026.snowlib.kotlin
+package io.github.snow1026.snowlib.events
 
 import io.github.snow1026.snowlib.annotations.scanner.EventSubscriberScanner
-import io.github.snow1026.snowlib.events.*
 import io.github.snow1026.snowlib.lifecycle.EventRegistry
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority

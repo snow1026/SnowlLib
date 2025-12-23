@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.github.snow1026"
-version = "1.0.0"
+version = "1.0.0-SNAPSHOT"
 
 val pluginVersion = version.toString()
 

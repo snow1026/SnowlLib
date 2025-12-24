@@ -97,12 +97,12 @@ public final class EventBuilder<T extends Event> {
     public EventHandle register(Plugin plugin) {
         LambdaListener listener = new LambdaListener();
 
-        EventExecutorImpl<T> executor = (EventExecutorImpl<T>) Reflection.getConstructor(EventExecutorImpl.class).invoke(key, handler, filters, interceptors, pipelines, policy, forceCancel, executionLimit, expiry, debug);
+        EventExecutorImpl<T> executor = (EventExecutorImpl<T>) Reflection.getConstructor(EventExecutorImpl.class, EventKey.class, Consumer.class, List.class, List.class, List.class, EventPolicy.class, boolean.class, int.class, Duration.class, boolean.class).invoke(key, handler, List.copyOf(filters), List.copyOf(interceptors), List.copyOf(pipelines), policy, forceCancel, executionLimit, expiry, debug);
 
         Bukkit.getPluginManager().registerEvent(type, listener, priority, executor, plugin, ignoreCancelled);
 
         EventHandle handle = new EventHandle(listener);
-        EventRegistry.bind(handle); // Lifecycle에 자동 등록
+        EventRegistry.bind(handle);
         return handle;
     }
 }

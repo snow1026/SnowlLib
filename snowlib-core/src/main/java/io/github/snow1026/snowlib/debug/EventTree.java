@@ -1,6 +1,6 @@
 package io.github.snow1026.snowlib.debug;
 
-import io.github.snow1026.snowlib.events.EventKey;
+import io.github.snow1026.snowlib.event.EventKey;
 
 import java.util.Collections;
 import java.util.Map;
@@ -8,12 +8,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class EventTree {
-    // 스레드 안전성을 위해 ConcurrentHashMap 사용
     private static final Map<EventKey, Set<String>> tree = new ConcurrentHashMap<>();
 
     public static void record(EventKey key, String source) {
-        tree.computeIfAbsent(key, k -> Collections.newSetFromMap(new ConcurrentHashMap<>()))
-                .add(source);
+        tree.computeIfAbsent(key, k -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(source);
     }
 
     public static void dump() {

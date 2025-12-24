@@ -1,35 +1,33 @@
 package io.github.snow1026.snowlib.config.parsers.object;
 
-import io.github.snow1026.snowlib.annotations.config.ConfigKey;
-import io.github.snow1026.snowlib.annotations.config.ConfigRoot;
-import io.github.snow1026.snowlib.annotations.config.ConfigSection;
+import io.github.snow1026.snowlib.annotation.config.ConfigKey;
+import io.github.snow1026.snowlib.annotation.config.ConfigRoot;
+import io.github.snow1026.snowlib.annotation.config.ConfigSection;
 import io.github.snow1026.snowlib.config.ConfigData;
 import io.github.snow1026.snowlib.config.ConfigReader;
 import io.github.snow1026.snowlib.config.Validator;
 import io.github.snow1026.snowlib.config.parsers.ConfigParser;
 import io.github.snow1026.snowlib.config.parsers.ParserRegistry;
-import io.github.snow1026.snowlib.exceptions.ConfigBindException;
+import io.github.snow1026.snowlib.exception.ConfigBindException;
+import io.github.snow1026.snowlib.util.reflect.Reflection; // 추가
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
+@SuppressWarnings("unchecked")
 public final class ObjectBinder {
 
     private ObjectBinder() {}
 
     public static <T> T bind(ConfigData data, Class<T> type) {
         try {
-            T instance = createInstance(type);
+            T instance = (T) Reflection.getConstructor(type).invoke();
+
             String basePath = resolveBasePath(type, data.getPath());
             ConfigData scoped = ConfigData.create(data.getConfig(), basePath);
 
-            for (Field field : getAllFields(type)) {
-                field.setAccessible(true);
+            for (Field field : type.getDeclaredFields()) {
                 bindField(field, instance, scoped);
             }
 
@@ -40,11 +38,13 @@ public final class ObjectBinder {
         }
     }
 
-    private static void bindField(Field field, Object instance, ConfigData data) throws IllegalAccessException {
+    private static void bindField(Field field, Object instance, ConfigData data) {
+        Reflection.FieldAccessor<Object> accessor = Reflection.getField(instance.getClass(), field.getName(), (Class<Object>) field.getType());
+
         if (field.isAnnotationPresent(ConfigSection.class)) {
             ConfigSection section = field.getAnnotation(ConfigSection.class);
             ConfigData child = ConfigData.create(data.getConfig(), data.build(section.value()));
-            field.set(instance, bind(child, field.getType()));
+            accessor.set(instance, bind(child, field.getType()));
             return;
         }
 
@@ -53,22 +53,13 @@ public final class ObjectBinder {
         String[] alias = key != null ? key.alias() : new String[0];
         boolean saveDefault = key != null && key.saveDefault();
 
-        Object def = null;
-        if (key != null && !key.def().isEmpty()) {
-            def = parseDefaultValue(key.def(), field.getType());
-        }
+        Object def = (key != null && !key.def().isEmpty()) ? parseDefaultValue(key.def(), field.getType()) : null;
 
-        Object value;
         Type genericType = field.getGenericType();
-
-        if (genericType instanceof ParameterizedType) {
-            value = ConfigReader.read(data, genericType, path, def, saveDefault, alias);
-        } else {
-            value = ConfigReader.read(data, field.getType(), path, def, saveDefault, alias);
-        }
+        Object value = ConfigReader.read(data, genericType instanceof ParameterizedType ? genericType : field.getType(), path, def, saveDefault, alias);
 
         if (value != null) {
-            field.set(instance, value);
+            accessor.set(instance, value);
         }
     }
 
@@ -77,27 +68,9 @@ public final class ObjectBinder {
         if (parser != null) {
             try {
                 return parser.parse(defStr);
-            } catch (Exception e) {
-                return null;
-            }
+            } catch (Exception ignored) {}
         }
         return null;
-    }
-
-    private static <T> T createInstance(Class<T> type) throws ReflectiveOperationException {
-        Constructor<T> ctor = type.getDeclaredConstructor();
-        ctor.setAccessible(true);
-        return ctor.newInstance();
-    }
-
-    private static List<Field> getAllFields(Class<?> type) {
-        List<Field> fields = new ArrayList<>();
-        Class<?> current = type;
-        while (current != null && current != Object.class) {
-            fields.addAll(Arrays.asList(current.getDeclaredFields()));
-            current = current.getSuperclass();
-        }
-        return fields;
     }
 
     private static String resolveBasePath(Class<?> type, String currentPath) {

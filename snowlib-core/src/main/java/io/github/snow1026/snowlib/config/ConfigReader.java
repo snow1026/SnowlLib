@@ -4,8 +4,8 @@ import io.github.snow1026.snowlib.config.parsers.ConfigParser;
 import io.github.snow1026.snowlib.config.parsers.ParserRegistry;
 import io.github.snow1026.snowlib.config.parsers.ParserUtil;
 import io.github.snow1026.snowlib.config.parsers.object.ObjectBinder;
-import io.github.snow1026.snowlib.exceptions.ConfigParserNotFoundException;
-import io.github.snow1026.snowlib.exceptions.ConfigResultParseException;
+import io.github.snow1026.snowlib.exception.ConfigParserNotFoundException;
+import io.github.snow1026.snowlib.exception.ConfigResultParseException;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 

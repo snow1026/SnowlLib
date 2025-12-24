@@ -1,10 +1,10 @@
 package io.github.snow1026.snowlib.config.loader;
 
-import io.github.snow1026.snowlib.annotations.config.ConfigRoot;
+import io.github.snow1026.snowlib.annotation.config.ConfigRoot;
 import io.github.snow1026.snowlib.config.ConfigData;
 import io.github.snow1026.snowlib.config.Validator;
 import io.github.snow1026.snowlib.config.parsers.object.ObjectBinder;
-import io.github.snow1026.snowlib.exceptions.ConfigBindException;
+import io.github.snow1026.snowlib.exception.ConfigBindException;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public final class ConfigLoader {

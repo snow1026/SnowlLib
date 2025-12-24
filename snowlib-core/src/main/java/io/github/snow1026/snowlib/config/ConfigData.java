@@ -1,6 +1,6 @@
 package io.github.snow1026.snowlib.config;
 
-import io.github.snow1026.snowlib.internals.config.ConfigDataImpl;
+import io.github.snow1026.snowlib.internal.config.ConfigDataImpl;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 

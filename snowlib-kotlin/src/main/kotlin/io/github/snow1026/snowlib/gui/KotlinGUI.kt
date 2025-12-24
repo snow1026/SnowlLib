@@ -1,6 +1,6 @@
 package io.github.snow1026.snowlib.gui
 
-import io.github.snow1026.snowlib.gui.events.*
+import io.github.snow1026.snowlib.gui.event.*
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

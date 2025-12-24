@@ -1,7 +1,7 @@
 package io.github.snow1026.snowlib.config.parsers;
 
-import io.github.snow1026.snowlib.exceptions.ConfigParserNotFoundException;
-import io.github.snow1026.snowlib.exceptions.ConfigResultParseException;
+import io.github.snow1026.snowlib.exception.ConfigParserNotFoundException;
+import io.github.snow1026.snowlib.exception.ConfigResultParseException;
 
 import java.lang.reflect.Type;
 

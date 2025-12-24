@@ -1,8 +1,8 @@
 package io.github.snow1026.snowlib.gui;
 
-import io.github.snow1026.snowlib.events.Events;
-import io.github.snow1026.snowlib.gui.events.*;
-import io.github.snow1026.snowlib.internals.gui.GUIImpl;
+import io.github.snow1026.snowlib.event.Events;
+import io.github.snow1026.snowlib.gui.event.*;
+import io.github.snow1026.snowlib.internal.gui.GUIImpl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;

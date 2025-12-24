@@ -1,8 +1,8 @@
 package io.github.snow1026.snowlib.gui;
 
-import io.github.snow1026.snowlib.gui.events.*;
-import io.github.snow1026.snowlib.internals.gui.GUIImpl;
-import io.github.snow1026.snowlib.utils.reflect.Reflection;
+import io.github.snow1026.snowlib.gui.event.*;
+import io.github.snow1026.snowlib.internal.gui.GUIImpl;
+import io.github.snow1026.snowlib.util.reflect.Reflection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;

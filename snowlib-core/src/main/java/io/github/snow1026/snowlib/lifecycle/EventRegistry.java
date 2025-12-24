@@ -1,8 +1,8 @@
 // io.github.snow1026.snowlib.lifecycle.EventRegistry
 package io.github.snow1026.snowlib.lifecycle;
 
-import io.github.snow1026.snowlib.events.EventHandle;
-import io.github.snow1026.snowlib.events.EventInterceptor;
+import io.github.snow1026.snowlib.event.EventHandle;
+import io.github.snow1026.snowlib.event.EventInterceptor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Objects;
 
 public final class EventRegistry {
-    private static SnowLifecycle defaultLifecycle;
+    private static EventLifeCycle defaultLifecycle;
     private static final List<EventInterceptor> globalInterceptors = new ArrayList<>();
 
-    public static void init(SnowLifecycle lc) {
+    public static void init(EventLifeCycle lc) {
         defaultLifecycle = lc;
     }
 
-    public static SnowLifecycle getLifecycle() {
+    public static EventLifeCycle getLifecycle() {
         return Objects.requireNonNull(defaultLifecycle, "SnowLib Lifecycle is not initialized!");
     }
 

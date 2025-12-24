@@ -1,6 +1,6 @@
 package io.github.snow1026.snowlib.gui;
 
-import io.github.snow1026.snowlib.gui.events.GUIClickEvent;
+import io.github.snow1026.snowlib.gui.event.GUIClickEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;

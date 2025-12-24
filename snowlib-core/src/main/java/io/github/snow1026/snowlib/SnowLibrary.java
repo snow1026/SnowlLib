@@ -1,17 +1,17 @@
 package io.github.snow1026.snowlib;
 
-import io.github.snow1026.snowlib.commands.Sommand;
+import io.github.snow1026.snowlib.command.Sommand;
 import io.github.snow1026.snowlib.gui.GUIListener;
 import io.github.snow1026.snowlib.lifecycle.EventRegistry;
-import io.github.snow1026.snowlib.lifecycle.SnowLifecycle;
+import io.github.snow1026.snowlib.lifecycle.EventLifeCycle;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SnowLibrary extends JavaPlugin {
-    private SnowLifecycle lifecycle;
+    private EventLifeCycle lifecycle;
 
     @Override
     public void onEnable() {
-        lifecycle = new SnowLifecycle(this);
+        lifecycle = new EventLifeCycle(this);
         EventRegistry.init(lifecycle);
         Sommand.init(this);
         GUIListener.setup();

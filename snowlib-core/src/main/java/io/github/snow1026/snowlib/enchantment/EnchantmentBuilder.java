@@ -12,6 +12,7 @@ import java.util.Set;
 
 public class EnchantmentBuilder {
     private final SnowKey key;
+    private String name;
     private Set<Material> supportedItems = Set.of();
     private EnchantmentItemSet primaryItems = null;
     private int weight = 10;
@@ -20,9 +21,20 @@ public class EnchantmentBuilder {
     private EnchantmentCost maxCost = new EnchantmentCost(20, 1);
     private int anvilCost = 4;
     private final List<EnchantmentSlot> slots = new ArrayList<>();
+    private boolean isTreasure = false;
+    private boolean isCurse = false;
+    private boolean isTradeable = true;
+    private boolean isDiscoverable = true;
+    private boolean isEnchantable = true;
 
     public EnchantmentBuilder(SnowKey key) {
         this.key = key;
+        this.name = key.path();
+    }
+
+    public EnchantmentBuilder display(String name) {
+        this.name = name;
+        return this;
     }
 
     public EnchantmentBuilder supportedItems(Material... materials) {
@@ -61,8 +73,33 @@ public class EnchantmentBuilder {
         return this;
     }
 
+    public EnchantmentBuilder treasure(boolean val) {
+        this.isTreasure = val;
+        return this;
+    }
+
+    public EnchantmentBuilder curse(boolean val) {
+        this.isCurse = val;
+        return this;
+    }
+
+    public EnchantmentBuilder tradeable(boolean val) {
+        this.isTradeable = val;
+        return this;
+    }
+
+    public EnchantmentBuilder discoverable(boolean val) {
+        this.isDiscoverable = val;
+        return this;
+    }
+
+    public EnchantmentBuilder enchantable(boolean val) {
+        this.isEnchantable = val;
+        return this;
+    }
+
     public SnowEnchantment build() {
-        EnchantmentComponent component = new EnchantmentComponent(new EnchantmentItemSet(supportedItems), Optional.ofNullable(primaryItems), weight, maxLevel, minCost, maxCost, anvilCost, slots.isEmpty() ? List.of(EnchantmentSlot.of(EquipmentSlot.values())) : slots);
+        EnchantmentComponent component = new EnchantmentComponent(name, new EnchantmentItemSet(supportedItems), Optional.ofNullable(primaryItems), weight, maxLevel, minCost, maxCost, anvilCost, slots.isEmpty() ? List.of(EnchantmentSlot.of(EquipmentSlot.values())) : slots, isTreasure, isCurse, isTradeable, isDiscoverable, isEnchantable);
         return new SnowEnchantment(key, component) {};
     }
 }

@@ -9,7 +9,7 @@ import java.util.Objects;
 public record SnowKey(String root, String path) {
 
     public SnowKey(Plugin plugin, String path) {
-        this(plugin.getName(), path);
+        this(plugin.getName().toLowerCase(), path);
     }
 
     public static SnowKey minecraft(String path) {

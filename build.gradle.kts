@@ -57,7 +57,7 @@ tasks {
     compileJava.get().dependsOn(clean)
 }
 
-val serverPluginsDir = file("C:/Users/user/Desktop/._LumPq_/DarkForest/.server/plugins")
+val serverPluginsDir = file("C:/Users/user/Desktop/.server/plugins")
 tasks.register<Copy>("copyJarToServer") {
     dependsOn(tasks.shadowJar)
     from(tasks.shadowJar.get().archiveFile)

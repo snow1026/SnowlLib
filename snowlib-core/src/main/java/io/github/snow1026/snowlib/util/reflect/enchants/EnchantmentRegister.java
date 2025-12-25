@@ -9,134 +9,195 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({"rawtypes", "unchecked"})
 public final class EnchantmentRegister {
-    private static final Class<?> LOCATION_CLASS = Reflection.getClass("net.minecraft.resources.ResourceLocation", "net.minecraft.resources.Identifier");
-    private static final Class<?> REGISTRIES_CLASS = Reflection.getMinecraftClass("core.registries.Registries");
-    private static final Class<?> RESOURCE_KEY_CLASS = Reflection.getMinecraftClass("resources.ResourceKey");
-    private static final Class<?> ENCHANTMENT_CLASS = Reflection.getMinecraftClass("world.item.enchantment.Enchantment");
-    private static final Class<?> ENCHANT_DEF_CLASS = Reflection.getMinecraftClass("world.item.enchantment.Enchantment$EnchantmentDefinition");
-    private static final Class<?> ENCHANT_COST_CLASS = Reflection.getMinecraftClass("world.item.enchantment.Enchantment$Cost");
-    private static final Class<?> HOLDER_SET_CLASS = Reflection.getMinecraftClass("core.HolderSet");
-    private static final Class<?> SLOT_GROUP_CLASS = Reflection.getMinecraftClass("world.entity.EquipmentSlotGroup");
-    private static final Class<?> COMPONENT_CLASS = Reflection.getMinecraftClass("network.chat.Component");
-    private static final Class<?> DATA_COMP_MAP_CLASS = Reflection.getMinecraftClass("core.component.DataComponentMap");
-    private static final Class<?> REG_INFO_CLASS = Reflection.getMinecraftClass("core.RegistrationInfo");
-    private static final Class<?> MAPPED_REGISTRY_CLASS = Reflection.getMinecraftClass("core.MappedRegistry");
-    private static final Reflection.FieldAccessor<Map> LOCATION_TO_ENTRY = Reflection.getField(MAPPED_REGISTRY_CLASS, "c", Map.class);
-    private static final Reflection.FieldAccessor<Map> KEY_TO_ENTRY = Reflection.getField(MAPPED_REGISTRY_CLASS, "d", Map.class);
-    private static final Reflection.FieldAccessor<Map> VALUE_TO_ENTRY = Reflection.getField(MAPPED_REGISTRY_CLASS, "e", Map.class);
-    private static final Reflection.FieldAccessor<Map> REGISTRATION_INFOS = Reflection.getField(MAPPED_REGISTRY_CLASS, "f", Map.class);
+    private static final Class<?> REGISTRIES = Reflection.getMinecraftClass("core.registries.Registries");
+    private static final Class<?> ENCHANTMENT = Reflection.getMinecraftClass("world.item.enchantment.Enchantment");
+    private static final Class<?> ENCHANT_DEF = Reflection.getMinecraftClass("world.item.enchantment.Enchantment$EnchantmentDefinition");
+    private static final Class<?> ENCHANT_COST = Reflection.getMinecraftClass("world.item.enchantment.Enchantment$Cost");
+    private static final Class<?> HOLDER_SET = Reflection.getMinecraftClass("core.HolderSet");
+    private static final Class<?> HOLDER_SET_NAMED = Reflection.getMinecraftClass("core.HolderSet$Named");
+    private static final Class<?> HOLDER_REF = Reflection.getMinecraftClass("core.Holder$Reference");
+    private static final Class<?> TAG_KEY = Reflection.getMinecraftClass("tags.TagKey");
+    private static final Class<?> SLOT_GROUP = Reflection.getMinecraftClass("world.entity.EquipmentSlotGroup");
+    private static final Class<?> COMPONENT = Reflection.getMinecraftClass("network.chat.Component");
+    private static final Class<?> DATA_COMPONENT_MAP = Reflection.getMinecraftClass("core.component.DataComponentMap");
+    private static final Class<?> REGISTRATION_INFO = Reflection.getMinecraftClass("core.RegistrationInfo");
+    private static final Class<?> RESOURCE_KEY = Reflection.getMinecraftClass("resources.ResourceKey");
+    private static final Class<?> MAPPED_REGISTRY = Reflection.getMinecraftClass("core.MappedRegistry");
 
-    private static Object enchantRegistry = null;
-    private static Object itemRegistry = null;
+    private static final Class<?> RESOURCE_LOCATION;
+    private static final Object ENCHANT_REGISTRY;
+    private static final Object ITEM_REGISTRY;
 
-    public EnchantmentRegister() {
-        Object server = Reflection.getMethod(Reflection.getCraftBukkitClass("CraftServer"), "getServer").invoke(Bukkit.getServer());
-        Object access = Reflection.getMethod(server.getClass(), "bc").invoke(server);
+    static {
+        try {
+            Object craftServer = Bukkit.getServer();
+            Object server = Reflection.getMethod(Reflection.getCraftBukkitClass("CraftServer"), "getServer").invoke(craftServer);
+            Object registryAccess = Reflection.getMethod(server.getClass(), "registryAccess").invoke(server);
 
-        Object enchantKey = Reflection.getField(REGISTRIES_CLASS, "b", RESOURCE_KEY_CLASS).get(null);
-        Object itemKey = Reflection.getField(REGISTRIES_CLASS, "f", RESOURCE_KEY_CLASS).get(null);
+            Object enchantKey = Reflection.getField(REGISTRIES, "ENCHANTMENT", RESOURCE_KEY).get(null);
+            Object itemKey = Reflection.getField(REGISTRIES, "ITEM", RESOURCE_KEY).get(null);
 
-        enchantRegistry = lookup(access, enchantKey);
-        itemRegistry = lookup(access, itemKey);
+            if (VersionUtil.getNmsVersion() != VersionUtil.MappingsVersion.v1_21_R7) {
+                RESOURCE_LOCATION = Reflection.getMinecraftClass("resources.ResourceLocation");
+            } else {
+                RESOURCE_LOCATION = Reflection.getMinecraftClass("resources.Identifier");
+            }
+
+            ENCHANT_REGISTRY = getRegistry(registryAccess, enchantKey);
+            ITEM_REGISTRY = getRegistry(registryAccess, itemKey);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize EnchantmentRegister", e);
+        }
+    }
+
+    private static Object getRegistry(Object registryAccess, Object key) {
+        Object optional = Reflection.getMethod(registryAccess.getClass(), "lookup", RESOURCE_KEY).invoke(registryAccess, key);
+        return Reflection.getMethod(Optional.class, "orElseThrow").invoke(optional);
     }
 
     public static void register(SnowEnchantment snowEnchantment) {
-        EnchantmentRegistryFreezer.unfreeze(enchantRegistry);
-        EnchantmentRegistryFreezer.unfreeze(itemRegistry);
+        SnowKey key = snowEnchantment.key();
+        EnchantmentRegistryFreezer.unfreeze(ENCHANT_REGISTRY);
+        EnchantmentRegistryFreezer.unfreeze(ITEM_REGISTRY);
 
         try {
-            SnowKey snowKey = snowEnchantment.key();
+            if (isRegistered(key)) return;
+
+            Object location = Reflection.getMethod(RESOURCE_LOCATION, "fromNamespaceAndPath", String.class, String.class).invoke(null, key.root(), key.path());
+            Object enchantRegistryResourceKey = Reflection.getField(REGISTRIES, "ENCHANTMENT", RESOURCE_KEY).get(null);
+            Object resKey = Reflection.getMethod(RESOURCE_KEY, "create", RESOURCE_KEY, RESOURCE_LOCATION).invoke(null, enchantRegistryResourceKey, location);
+
             EnchantmentComponent comp = snowEnchantment.component();
 
-            Object location = Reflection.getMethod(LOCATION_CLASS, "a", String.class, String.class).invoke(null, snowKey.root(), snowKey.path());
-            Object enchantRegKey = Reflection.getField(REGISTRIES_CLASS, "b", RESOURCE_KEY_CLASS).get(null);
-            Object key = Reflection.getMethod(RESOURCE_KEY_CLASS, "a", RESOURCE_KEY_CLASS, LOCATION_CLASS).invoke(null, enchantRegKey, location);
+            Object supported = createHolderSet(comp.supportedItems().materials());
+            Optional primary = comp.primaryItems().map(p -> createHolderSet(p.materials()));
+            Object minCost = Reflection.getConstructor(ENCHANT_COST, int.class, int.class).invoke(comp.minCost().base(), comp.minCost().perLevel());
+            Object maxCost = Reflection.getConstructor(ENCHANT_COST, int.class, int.class).invoke(comp.maxCost().base(), comp.maxCost().perLevel());
+            List slots = comp.slots().stream().flatMap(s -> s.slots().stream()).map(EnchantmentRegister::getNmsSlotGroup).toList();
 
-            Object supportedItems = createHolderSet(comp.supportedItems().materials());
-            Object primaryItems = comp.primaryItems().isPresent() ? Optional.of(createHolderSet(comp.primaryItems().get().materials())) : Optional.empty();
+            Object definition = Reflection.getConstructor(ENCHANT_DEF, HOLDER_SET, Optional.class, int.class, int.class, ENCHANT_COST, ENCHANT_COST, int.class, List.class).invoke(supported, primary, comp.weight(), comp.maxLevel(), minCost, maxCost, comp.anvilCost(), slots);
 
-            List<Object> nmsSlots = comp.slots().stream().flatMap(s -> s.slots().stream()).map(EnchantmentRegister::getNmsSlotGroup).collect(Collectors.toList());
+            Object title = Reflection.getMethod(COMPONENT, "translatable", String.class).invoke(null, comp.name());
+            Object emptyData = Reflection.getField(DATA_COMPONENT_MAP, "EMPTY", DATA_COMPONENT_MAP).get(null);
+            Object emptyHolderSet = Reflection.getMethod(HOLDER_SET, "direct", List.class).invoke(null, List.of());
 
-            Object minCost = Reflection.getConstructor(ENCHANT_COST_CLASS, int.class, int.class).invoke(comp.minCost().base(), comp.minCost().perLevel());
-            Object maxCost = Reflection.getConstructor(ENCHANT_COST_CLASS, int.class, int.class).invoke(comp.maxCost().base(), comp.maxCost().perLevel());
+            Object nmsEnchant = Reflection.getConstructor(ENCHANTMENT, COMPONENT, ENCHANT_DEF, HOLDER_SET, DATA_COMPONENT_MAP).invoke(title, definition, emptyHolderSet, emptyData);
 
-            Object definition = Reflection.getConstructor(ENCHANT_DEF_CLASS, HOLDER_SET_CLASS, Optional.class, int.class, int.class, ENCHANT_COST_CLASS, ENCHANT_COST_CLASS, int.class, List.class).invoke(supportedItems, primaryItems, comp.weight(), comp.maxLevel(), minCost, maxCost, comp.anvilCost(), nmsSlots);
-            Object title = Reflection.getMethod(COMPONENT_CLASS, "b", String.class).invoke(null, "enchantment." + snowKey.root() + "." + snowKey.path());
-            Object emptyDataMap = Reflection.getField(DATA_COMP_MAP_CLASS, "a", DATA_COMP_MAP_CLASS).get(null);
-            Object emptyHolderSet = Reflection.getMethod(HOLDER_SET_CLASS, "a").invoke(null); // direct()
+            Object info = Reflection.getField(REGISTRATION_INFO, "BUILT_IN", REGISTRATION_INFO).get(null);
 
-            Object nmsEnchantment = Reflection.getConstructor(ENCHANTMENT_CLASS, COMPONENT_CLASS, ENCHANT_DEF_CLASS, HOLDER_SET_CLASS, DATA_COMP_MAP_CLASS).invoke(title, definition, emptyHolderSet, emptyDataMap);
+            Object holder = Reflection.getMethod(MAPPED_REGISTRY, "register", RESOURCE_KEY, Object.class, REGISTRATION_INFO).invoke(ENCHANT_REGISTRY, resKey, nmsEnchant, info);
 
-            Object regInfo = Reflection.getField(REG_INFO_CLASS, "a", REG_INFO_CLASS).get(null); // BUILT_IN
-            Reflection.getMethod(enchantRegistry.getClass(), "a", RESOURCE_KEY_CLASS, Object.class, REG_INFO_CLASS).invoke(enchantRegistry, key, nmsEnchantment, regInfo);
+            if (HOLDER_REF.isInstance(holder)) {
+                Reflection.getMethod(HOLDER_REF, "bindValue", Object.class).invoke(holder, nmsEnchant);
 
-        } finally {
-            EnchantmentRegistryFreezer.freeze(itemRegistry);
-            EnchantmentRegistryFreezer.freeze(enchantRegistry);
-        }
-    }
+                List<Object> tagsToBind = new ArrayList<>();
+                if (comp.isTreasure()) injectTag(holder, "treasure", tagsToBind);
+                if (comp.isCurse()) injectTag(holder, "curse", tagsToBind);
+                if (comp.isTradeable()) injectTag(holder, "on_trade_offers", tagsToBind);
+                if (comp.isDiscoverable()) injectTag(holder, "on_random_loot", tagsToBind);
+                if (comp.isEnchantable()) injectTag(holder, "in_enchanting_table", tagsToBind);
 
-    public static void unRegister(SnowKey snowKey) {
-        if (!isRegistered(snowKey)) return;
-
-        EnchantmentRegistryFreezer.unfreeze(enchantRegistry);
-
-        try {
-            Object location = createLocation(snowKey);
-            Object enchantRegKey = Reflection.getField(REGISTRIES_CLASS, "b", RESOURCE_KEY_CLASS).get(null);
-            Object key = Reflection.getMethod(RESOURCE_KEY_CLASS, "a", RESOURCE_KEY_CLASS, LOCATION_CLASS).invoke(null, enchantRegKey, location);
-
-            Map locMap = LOCATION_TO_ENTRY.get(enchantRegistry);
-            Map keyMap = KEY_TO_ENTRY.get(enchantRegistry);
-            Map valMap = VALUE_TO_ENTRY.get(enchantRegistry);
-            Map infoMap = REGISTRATION_INFOS.get(enchantRegistry);
-
-            Object holder = locMap.get(location);
-            if (holder != null) {
-                Object value = Reflection.getMethod(holder.getClass(), "a").invoke(holder);
-
-                locMap.remove(location);
-                keyMap.remove(key);
-                if (value != null) {
-                    valMap.remove(value);
-                    infoMap.remove(value);
-                }
+                Reflection.getMethod(HOLDER_REF, "bindTags", Collection.class).invoke(holder, tagsToBind);
             }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to register enchantment: " + key, e);
         } finally {
-            EnchantmentRegistryFreezer.freeze(enchantRegistry);
+            EnchantmentRegistryFreezer.freeze(ENCHANT_REGISTRY);
+            EnchantmentRegistryFreezer.freeze(ITEM_REGISTRY);
         }
     }
 
-    public static boolean isRegistered(SnowKey snowKey) {
-        Object location = createLocation(snowKey);
-        return (boolean) Reflection.getMethod(MAPPED_REGISTRY_CLASS, "containsKey", LOCATION_CLASS).invoke(enchantRegistry, location);
+    private static void injectTag(Object holder, String tagName, List<Object> tagsToBind) {
+        try {
+            Object tagLocation = Reflection.getMethod(RESOURCE_LOCATION, "withDefaultNamespace", String.class).invoke(null, tagName);
+            Object enchantRegistryKey = Reflection.getField(REGISTRIES, "ENCHANTMENT", RESOURCE_KEY).get(null);
+            Object tagKey = Reflection.getMethod(TAG_KEY, "create", RESOURCE_KEY, RESOURCE_LOCATION).invoke(null, enchantRegistryKey, tagLocation);
+
+            Object holderSet = Reflection.getMethod(MAPPED_REGISTRY, "getOrCreateTagForRegistration", TAG_KEY).invoke(ENCHANT_REGISTRY, tagKey);
+
+            if (HOLDER_SET_NAMED.isInstance(holderSet)) {
+                Reflection.FieldAccessor<List> contentsAccessor = Reflection.getField(HOLDER_SET_NAMED, List.class, 0);
+
+                Object rawContents = contentsAccessor.get(holderSet);
+                List currentList = rawContents == null ? new ArrayList<>() : new ArrayList<>((Collection) rawContents);
+
+                if (!currentList.contains(holder)) {
+                    currentList.add(holder);
+                    contentsAccessor.set(holderSet, List.copyOf(currentList));
+                }
+
+                tagsToBind.add(tagKey);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to inject tag: " + tagName, e);
+        }
     }
 
-    private static Object createLocation(SnowKey snowKey) {
-        return Reflection.getMethod(LOCATION_CLASS, "a", String.class, String.class).invoke(null, snowKey.root(), snowKey.path());
+    private static void removeInternal(SnowKey key) {
+        try {
+            Object location = Reflection.getMethod(RESOURCE_LOCATION, "fromNamespaceAndPath", String.class, String.class).invoke(null, key.root(), key.path());
+
+            Map byLocation = Reflection.getField(MAPPED_REGISTRY, "byLocation", Map.class).get(ENCHANT_REGISTRY);
+            Map byKey = Reflection.getField(MAPPED_REGISTRY, "byKey", Map.class).get(ENCHANT_REGISTRY);
+            Map byValue = Reflection.getField(MAPPED_REGISTRY, "byValue", Map.class).get(ENCHANT_REGISTRY);
+            List byId = Reflection.getField(MAPPED_REGISTRY, "byId", List.class).get(ENCHANT_REGISTRY);
+            Map toId = Reflection.getField(MAPPED_REGISTRY, "toId", Map.class).get(ENCHANT_REGISTRY);
+
+            Object holder = byLocation.get(location);
+            if (holder == null) return;
+
+            Object nmsEnchant = null;
+            if ((boolean) Reflection.getMethod(HOLDER_REF, "isBound").invoke(holder)) {
+                nmsEnchant = Reflection.getMethod(HOLDER_REF, "value").invoke(holder);
+            }
+
+            Object resKey = Reflection.getMethod(HOLDER_REF, "key").invoke(holder);
+
+            byLocation.remove(location);
+            if (resKey != null) byKey.remove(resKey);
+            if (nmsEnchant != null) {
+                byValue.remove(nmsEnchant);
+                toId.remove(nmsEnchant);
+                byId.remove(holder);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static Object lookup(Object access, Object key) {
-        Optional<?> opt = (Optional<?>) Reflection.getMethod(access.getClass(), "a", RESOURCE_KEY_CLASS).invoke(access, key);
-        return opt.orElseThrow();
+    public static void unregister(SnowKey key) {
+        if (!isRegistered(key)) return;
+        EnchantmentRegistryFreezer.unfreeze(ENCHANT_REGISTRY);
+        try {
+            removeInternal(key);
+        } finally {
+            EnchantmentRegistryFreezer.freeze(ENCHANT_REGISTRY);
+        }
     }
 
     private static Object createHolderSet(Set<Material> materials) {
-        Class<?> magicClass = Reflection.getCraftBukkitClass("util.CraftMagicNumbers");
-        List<Object> holders = materials.stream().map(m -> Reflection.getMethod(magicClass, "getItem", Material.class).invoke(null, m)).map(item -> Reflection.getMethod(itemRegistry.getClass(), "a", Object.class).invoke(itemRegistry, item)).collect(Collectors.toList());
-        return Reflection.getMethod(HOLDER_SET_CLASS, "a", List.class).invoke(null, holders);
+        try {
+            Class<?> magic = Reflection.getCraftBukkitClass("util.CraftMagicNumbers");
+
+            List holders = new ArrayList<>();
+            for (Material m : materials) {
+                Object item = Reflection.getMethod(magic, "getItem", Material.class).invoke(null, m);
+                Object holder = Reflection.getMethod(ITEM_REGISTRY.getClass(), "wrapAsHolder", Object.class).invoke(ITEM_REGISTRY, item);
+                holders.add(holder);
+            }
+            return Reflection.getMethod(HOLDER_SET, "direct", List.class).invoke(null, holders);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static Object getNmsSlotGroup(EquipmentSlot slot) {
-        String groupName = switch (slot) {
+    public static Object getNmsSlotGroup(EquipmentSlot slot) {
+        String name = switch (slot) {
             case HAND -> "MAINHAND";
             case OFF_HAND -> "OFFHAND";
             case FEET -> "FEET";
@@ -146,11 +207,16 @@ public final class EnchantmentRegister {
             case BODY -> "ARMOR";
             case SADDLE -> "SADDLE";
         };
+        return Reflection.getEnumConstant(SLOT_GROUP, name);
+    }
 
-        if (groupName.equals("SADDLE") && !VersionUtil.isAtLeast(VersionUtil.MappingsVersion.v1_21_R4)) {
-            groupName = "ANY";
+    public static boolean isRegistered(SnowKey key) {
+        try {
+            Object location = Reflection.getMethod(RESOURCE_LOCATION, "fromNamespaceAndPath", String.class, String.class).invoke(null, key.root(), key.path());
+            Map byLocation = Reflection.getField(MAPPED_REGISTRY, "byLocation", Map.class).get(ENCHANT_REGISTRY);
+            return byLocation.containsKey(location);
+        } catch (Exception e) {
+            return false;
         }
-
-        return Reflection.getEnumConstant(SLOT_GROUP_CLASS, groupName);
     }
 }

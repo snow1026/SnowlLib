@@ -27,8 +27,8 @@ public final class EnchantmentRegister {
     private static final Class<?> REGISTRATION_INFO = Reflection.getMinecraftClass("core.RegistrationInfo");
     private static final Class<?> RESOURCE_KEY = Reflection.getMinecraftClass("resources.ResourceKey");
     private static final Class<?> MAPPED_REGISTRY = Reflection.getMinecraftClass("core.MappedRegistry");
-
     private static final Class<?> RESOURCE_LOCATION;
+
     private static final Object ENCHANT_REGISTRY;
     private static final Object ITEM_REGISTRY;
 

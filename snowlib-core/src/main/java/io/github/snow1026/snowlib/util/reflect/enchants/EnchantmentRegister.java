@@ -32,6 +32,9 @@ public final class EnchantmentRegister {
     private static final Object ENCHANT_REGISTRY;
     private static final Object ITEM_REGISTRY;
 
+    private static final Reflection.FieldAccessor<Boolean> FROZEN = Reflection.getField(MAPPED_REGISTRY, "frozen", boolean.class);
+    private static final Reflection.FieldAccessor<Map> INTRUSIVE = Reflection.getField(MAPPED_REGISTRY, "unregisteredIntrusiveHolders", Map.class);
+
     static {
         try {
             Object craftServer = Bukkit.getServer();
@@ -59,10 +62,19 @@ public final class EnchantmentRegister {
         return Reflection.getMethod(Optional.class, "orElseThrow").invoke(optional);
     }
 
+    public static void unfreeze(Object registry) {
+        FROZEN.set(registry, false);
+        INTRUSIVE.set(registry, null);
+    }
+
+    public static void freeze(Object registry) {
+        FROZEN.set(registry, true);
+    }
+
     public static void register(SnowEnchantment snowEnchantment) {
         SnowKey key = snowEnchantment.key();
-        EnchantmentRegistryFreezer.unfreeze(ENCHANT_REGISTRY);
-        EnchantmentRegistryFreezer.unfreeze(ITEM_REGISTRY);
+        unfreeze(ENCHANT_REGISTRY);
+        unfreeze(ITEM_REGISTRY);
 
         try {
             if (isRegistered(key)) return;
@@ -107,8 +119,8 @@ public final class EnchantmentRegister {
         } catch (Exception e) {
             throw new RuntimeException("Failed to register enchantment: " + key, e);
         } finally {
-            EnchantmentRegistryFreezer.freeze(ENCHANT_REGISTRY);
-            EnchantmentRegistryFreezer.freeze(ITEM_REGISTRY);
+            freeze(ENCHANT_REGISTRY);
+            freeze(ITEM_REGISTRY);
         }
     }
 
@@ -172,11 +184,13 @@ public final class EnchantmentRegister {
 
     public static void unregister(SnowKey key) {
         if (!isRegistered(key)) return;
-        EnchantmentRegistryFreezer.unfreeze(ENCHANT_REGISTRY);
+        unfreeze(ENCHANT_REGISTRY);
+        unfreeze(ITEM_REGISTRY);
         try {
             removeInternal(key);
         } finally {
-            EnchantmentRegistryFreezer.freeze(ENCHANT_REGISTRY);
+            freeze(ENCHANT_REGISTRY);
+            freeze(ITEM_REGISTRY);
         }
     }
 

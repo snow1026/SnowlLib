@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.github.snow1026"
-version = "1.0.3"
+version = "1.0.4"
 
 val pluginVersion = version.toString()
 
@@ -51,18 +51,9 @@ tasks {
 
     build {
         dependsOn(shadowJar)
-        finalizedBy("copyJarToServer")
     }
 
     compileJava.get().dependsOn(clean)
-}
-
-val serverPluginsDir = file("C:/Users/user/Desktop/.server/plugins")
-tasks.register<Copy>("copyJarToServer") {
-    dependsOn(tasks.shadowJar)
-    from(tasks.shadowJar.get().archiveFile)
-    into(serverPluginsDir)
-    rename { "SnowLib-$pluginVersion.jar" }
 }
 
 dependencies {

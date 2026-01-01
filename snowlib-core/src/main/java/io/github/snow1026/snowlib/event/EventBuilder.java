@@ -58,7 +58,10 @@ public final class EventBuilder<T extends Event> {
     public EventBuilder<T> debug(boolean value) { this.debug = value; return this; }
     /** 특정 조건을 만족할 때만 핸들러가 실행되도록 필터를 추가합니다. */
     public EventBuilder<T> filter(Predicate<T> filter) { this.filters.add(filter); return this; }
-
+    /** 이벤트 실행 과정을 모니터링할 인터셉터를 추가합니다. */
+    public EventBuilder<T> intercept(EventInterceptor interceptor) { this.interceptors.add(interceptor); return this; }
+    /** 이벤트 실행 전/후 로직을 처리할 파이프라인을 추가합니다. */
+    public EventBuilder<T> pipeline(EventPipeline<T> pipeline) { this.pipelines.add(pipeline); return this; }
     /** 기본 플러그인을 사용하여 리스너를 등록합니다. */
     public EventHandle register() { return register(EventRegistry.getLifecycle().plugin()); }
 

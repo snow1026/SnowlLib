@@ -1,6 +1,6 @@
 name: SnowLib
-version: 1.0.0
+version: 1.0.5
 main: io.github.snow1026.snowlib.SnowLibrary
-api-version: 1.20
+api-version: 1.21
 author: snow1026
 load: STARTUP

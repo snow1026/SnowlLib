@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.github.snow1026"
-version = "1.0.4"
+version = "1.0.5"
 
 val pluginVersion = version.toString()
 
@@ -20,6 +20,10 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/") { name = "papermc" }
+    }
+
+    dependencies {
+        implementation("net.dv8tion:JDA:6.2.0")
     }
 
     java {

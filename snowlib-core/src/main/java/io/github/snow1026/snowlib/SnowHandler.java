@@ -1,4 +1,0 @@
-package io.github.snow1026.snowlib;
-
-public abstract class SnowHandler {
-}

@@ -1,6 +1,5 @@
 plugins {
-    // 코틀린 최신 안정화 버전 (2.0.0) 사용을 권장합니다.
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.2.21"
     id("com.gradleup.shadow") version "8.3.0"
 }
 

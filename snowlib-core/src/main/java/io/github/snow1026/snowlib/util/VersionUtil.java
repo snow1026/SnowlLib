@@ -13,6 +13,10 @@ import java.util.logging.Level;
  */
 public final class VersionUtil {
 
+    private VersionUtil() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * 지원되는 마인크래프트 버전 매핑 열거형입니다.
      */

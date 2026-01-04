@@ -7,8 +7,12 @@ import org.jetbrains.annotations.NotNull;
  * Bukkit 스케줄러 작업을 쉽고 직관적으로 생성하기 위한 진입점 클래스입니다.
  * 이 클래스를 통해 동기(Sync) 또는 비동기(Async) 작업을 체이닝 방식으로 시작할 수 있습니다.
  */
-public class Tasker {
+public final class Tasker {
     private static Plugin plugin;
+
+    private Tasker() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Tasker에서 사용할 플러그인 인스턴스를 초기화합니다.

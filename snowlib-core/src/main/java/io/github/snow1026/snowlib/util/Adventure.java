@@ -7,7 +7,11 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Adventure {
+public final class Adventure {
+
+    private Adventure() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * 문자열을 MiniMessage 컴포넌트로 변환

@@ -53,7 +53,8 @@ class SommandBuilder(val node: SommandNode) {
     }
 }
 
-fun registerCommand(name: String, block: SommandBuilder.() -> Unit) {
-    val rootNode = Sommand.register(name)
-    SommandBuilder(rootNode).block()
+fun createCommand(name: String, block: SommandBuilder.() -> Unit): Sommand {
+    val sommand = Sommand(name)
+    SommandBuilder(sommand.root()).block()
+    return sommand
 }

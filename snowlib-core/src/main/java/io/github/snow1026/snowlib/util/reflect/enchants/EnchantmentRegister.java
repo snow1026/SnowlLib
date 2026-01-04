@@ -57,6 +57,10 @@ public final class EnchantmentRegister {
         }
     }
 
+    private EnchantmentRegister() {
+        throw new UnsupportedOperationException();
+    }
+
     private static Object getRegistry(Object registryAccess, Object key) {
         Object optional = Reflection.getMethod(registryAccess.getClass(), "lookup", RESOURCE_KEY).invoke(registryAccess, key);
         return Reflection.getMethod(Optional.class, "orElseThrow").invoke(optional);

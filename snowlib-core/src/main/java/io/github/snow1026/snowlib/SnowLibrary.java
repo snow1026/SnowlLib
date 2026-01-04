@@ -7,7 +7,7 @@ import io.github.snow1026.snowlib.task.Tasker;
 import io.github.snow1026.snowlib.util.reflect.Reflection;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SnowLibrary extends JavaPlugin {
+public final class SnowLibrary extends JavaPlugin {
     private static EventLifeCycle eventLifecycle;
     private static SnowLibrary snowlibrary;
 

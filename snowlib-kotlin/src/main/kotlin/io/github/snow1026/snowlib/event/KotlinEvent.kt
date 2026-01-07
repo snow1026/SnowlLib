@@ -1,7 +1,10 @@
 package io.github.snow1026.snowlib.event
 
-import io.github.snow1026.snowlib.annotation.scanner.EventSubscriberScanner
-import io.github.snow1026.snowlib.lifecycle.EventRegistry
+import io.github.snow1026.snowlib.annotations.scanner.EventSubscriberScanner
+import io.github.snow1026.snowlib.api.event.EventHandle
+import io.github.snow1026.snowlib.api.event.Events
+import io.github.snow1026.snowlib.api.lifecycle.EventRegistry
+import io.github.snow1026.snowlib.internal.event.EventImpl
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.plugin.Plugin
@@ -34,7 +37,7 @@ class SnowEventScope(val plugin: Plugin) {
 
     inline fun <reified T : Event> on(
         noinline handler: (T) -> Unit,
-        crossinline builderBlock: EventBuilder<T>.() -> Unit
+        crossinline builderBlock: EventImpl<T>.() -> Unit
     ): EventHandle {
         val builder = Events.listen(T::class.java, handler)
         builder.builderBlock() // 모든 Java EventBuilder 메서드 사용 가능
@@ -42,6 +45,6 @@ class SnowEventScope(val plugin: Plugin) {
     }
 }
 
-fun <T : Event> EventBuilder<T>.filterIf(predicate: (T) -> Boolean): EventBuilder<T> = this.filter(predicate)
-fun <T : Event> EventBuilder<T>.expireAfter(seconds: Long): EventBuilder<T> = this.expireAfter(Duration.ofSeconds(seconds))
-fun <T : Event> EventBuilder<T>.once(): EventBuilder<T> = this.once(true)
+fun <T : Event> EventImpl<T>.filterIf(predicate: (T) -> Boolean): EventImpl<T> = this.filter(predicate)
+fun <T : Event> EventImpl<T>.expireAfter(seconds: Long): EventImpl<T> = this.expireAfter(Duration.ofSeconds(seconds))
+fun <T : Event> EventImpl<T>.once(): EventImpl<T> = this.once(true)

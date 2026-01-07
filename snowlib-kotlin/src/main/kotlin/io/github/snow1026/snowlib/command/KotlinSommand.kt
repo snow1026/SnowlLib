@@ -1,60 +1,62 @@
 package io.github.snow1026.snowlib.command
 
-import io.github.snow1026.snowlib.command.argument.SuggestionProvider
+import io.github.snow1026.snowlib.api.command.Sommand
+import io.github.snow1026.snowlib.api.command.SommandContext
+import io.github.snow1026.snowlib.api.command.argument.SuggestionProvider
 import org.bukkit.command.CommandSender
 import java.util.function.Predicate
 
-class SommandBuilder(val node: SommandNode) {
+class SommandBuilder(val sommand: Sommand) {
 
     fun executes(block: (SommandContext) -> Unit) {
-        node.executes(block)
+        sommand.executes(block)
     }
 
     fun sub(name: String, block: SommandBuilder.() -> Unit = {}) {
-        node.sub(name) { childNode ->
+        sommand.sub(name) { childNode ->
             SommandBuilder(childNode).block()
         }
     }
 
     fun <T : Any> argument(name: String, type: Class<T>, block: SommandBuilder.() -> Unit = {}) {
-        node.sub(name, type) { childNode ->
+        sommand.sub(name, type) { childNode ->
             SommandBuilder(childNode).block()
         }
     }
 
     fun <T : Any> optional(name: String, type: Class<T>, block: SommandBuilder.() -> Unit = {}) {
-        node.subOptional(name, type) { childNode ->
+        sommand.subOptional(name, type) { childNode ->
             SommandBuilder(childNode).block()
         }
     }
 
     var permission: String?
         get() = null
-        set(value) { value?.let { node.requires(it) } }
+        set(value) { value?.let { sommand.requires(it) } }
 
     fun requires(failMessage: String, requirement: (CommandSender) -> Boolean) {
-        node.requires(Predicate { requirement(it) }, failMessage)
+        sommand.requires(Predicate { requirement(it) }, failMessage)
     }
 
     fun playerOnly() {
-        node.playerOnly()
+        sommand.playerOnly()
     }
 
     fun suggests(provider: (CommandSender, String) -> List<String>) {
-        node.suggests(SuggestionProvider { sender, input -> provider(sender, input) })
+        sommand.suggests(SuggestionProvider { sender, input -> provider(sender, input) })
     }
 
     fun aliases(vararg names: String) {
-        node.alias(*names)
+        sommand.alias(*names)
     }
 
     fun description(text: String) {
-        node.description(text)
+        sommand.description(text)
     }
 }
 
 fun createCommand(name: String, block: SommandBuilder.() -> Unit): Sommand {
-    val sommand = Sommand(name)
-    SommandBuilder(sommand.root()).block()
+    val sommand = Sommand.create(name)
+    SommandBuilder(sommand).block()
     return sommand
 }

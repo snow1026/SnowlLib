@@ -1,6 +1,6 @@
 package io.github.snow1026.snowlib.internal.item;
 
-import io.github.snow1026.snowlib.component.text.TextComponent;
+import io.github.snow1026.snowlib.api.component.text.TextComponent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.meta.ItemMeta;
 

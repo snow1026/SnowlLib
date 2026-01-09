@@ -34,6 +34,10 @@
 
 ### Gradle (Kotlin DSL)
 
+````yml
+depend: [ SnowLib ]
+````
+
 ``` kotlin
 
 repositories {
@@ -41,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.snow1026:snowlib:<version>")
+    compileOnly("io.github.snow1026:snowlib:<version>")
 }
 ```
 

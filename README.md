@@ -35,9 +35,13 @@
 ### Gradle (Kotlin DSL)
 
 ``` kotlin
+
+repositories {
+        mavenCentral()
+}
+
 dependencies {
-    implementation("io.github.snow1026:snowlib-core:<version>")
-    implementation("io.github.snow1026:snowlib-kotlin:<version>")
+    implementation("io.github.snow1026:snowlib:<version>")
 }
 ```
 

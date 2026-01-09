@@ -16,8 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class CommandRegistry implements MappedRegistry<Sommand> {
     private final Map<SnowKey, Sommand> registeredCommands = new ConcurrentHashMap<>();
 
-    public CommandRegistry() {
-    }
+    private CommandRegistry() {}
 
     @Override
     public void register(SnowKey key, Sommand target) {

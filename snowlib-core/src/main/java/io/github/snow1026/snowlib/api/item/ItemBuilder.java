@@ -1,21 +1,15 @@
 package io.github.snow1026.snowlib.api.item;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import io.github.snow1026.snowlib.api.component.text.TextComponent;
-import io.github.snow1026.snowlib.internal.item.ItemMetaApplier;
 import io.github.snow1026.snowlib.internal.item.PDCUtil;
-import org.bukkit.Bukkit;
+import io.github.snow1026.snowlib.internal.item.SnowItemBuilder;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,23 +22,7 @@ import java.util.function.Consumer;
  * 이 클래스는 Adventure 컴포넌트, PersistentDataContainer(PDC), 그리고
  * 가죽 갑옷 색상이나 머리 텍스처와 같은 특정 메타 데이터 수정을 지원합니다.
  */
-public class ItemBuilder {
-    private final ItemStack item;
-    private final ItemMeta meta;
-
-    private TextComponent name;
-    private final List<TextComponent> lore = new ArrayList<>();
-    private final Map<String, Object> pdc = new HashMap<>();
-
-    private ItemBuilder(Material material, int amount) {
-        this.item = new ItemStack(material, amount);
-        this.meta = item.getItemMeta();
-    }
-
-    private ItemBuilder(ItemStack itemStack) {
-        this.item = itemStack.clone();
-        this.meta = item.getItemMeta();
-    }
+public interface ItemBuilder {
 
     /**
      * 지정된 재질(Material)로 수량이 1개인 새 ItemBuilder를 생성합니다.
@@ -52,8 +30,8 @@ public class ItemBuilder {
      * @param material 아이템의 재질
      * @return 새로운 ItemBuilder 인스턴스
      */
-    public static ItemBuilder of(@NotNull Material material) {
-        return new ItemBuilder(material, 1);
+    static ItemBuilder of(@NotNull Material material) {
+        return new SnowItemBuilder(material, 1);
     }
 
     /**
@@ -63,8 +41,8 @@ public class ItemBuilder {
      * @param amount   아이템 수량
      * @return 새로운 ItemBuilder 인스턴스
      */
-    public static ItemBuilder of(@NotNull Material material, int amount) {
-        return new ItemBuilder(material, amount);
+    static ItemBuilder of(@NotNull Material material, int amount) {
+        return new SnowItemBuilder(material, amount);
     }
 
     /**
@@ -75,8 +53,8 @@ public class ItemBuilder {
      * @param itemStack 원본 ItemStack
      * @return 복제된 아이템을 감싸는 새로운 ItemBuilder 인스턴스
      */
-    public static ItemBuilder from(@NotNull ItemStack itemStack) {
-        return new ItemBuilder(itemStack);
+    static ItemBuilder from(@NotNull ItemStack itemStack) {
+        return new SnowItemBuilder(itemStack);
     }
 
     /**
@@ -85,10 +63,7 @@ public class ItemBuilder {
      * @param name 설정할 이름 (TextComponent), null일 경우 이름 없음
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder name(@Nullable TextComponent name) {
-        this.name = name;
-        return this;
-    }
+    ItemBuilder name(@Nullable TextComponent name);
 
     /**
      * 아이템의 표시 이름을 일반 문자열로 설정합니다.
@@ -98,9 +73,7 @@ public class ItemBuilder {
      * @param text 설정할 이름 문자열
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder name(@NotNull String text) {
-        return name(TextComponent.of(text).mm());
-    }
+    ItemBuilder name(@NotNull String text);
 
     /**
      * 아이템의 설명(Lore)을 설정합니다. 기존 Lore는 초기화됩니다.
@@ -108,11 +81,7 @@ public class ItemBuilder {
      * @param lines 설정할 Lore 줄 목록 (가변 인자)
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder lore(@NotNull TextComponent... lines) {
-        lore.clear();
-        lore.addAll(Arrays.asList(lines));
-        return this;
-    }
+    ItemBuilder lore(@NotNull TextComponent... lines);
 
     /**
      * 아이템의 설명(Lore)을 설정합니다. 기존 Lore는 초기화됩니다.
@@ -120,11 +89,7 @@ public class ItemBuilder {
      * @param lines 설정할 Lore 리스트
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder lore(@NotNull List<TextComponent> lines) {
-        lore.clear();
-        lore.addAll(lines);
-        return this;
-    }
+    ItemBuilder lore(@NotNull List<TextComponent> lines);
 
     /**
      * 아이템의 설명(Lore)을 문자열 배열로 설정합니다. 기존 Lore는 초기화됩니다.
@@ -134,13 +99,7 @@ public class ItemBuilder {
      * @param lines 설정할 Lore 문자열 배열
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder lore(@NotNull String... lines) {
-        lore.clear();
-        for (String line : lines) {
-            lore.add(TextComponent.of(line).mm());
-        }
-        return this;
-    }
+    ItemBuilder lore(@NotNull String... lines);
 
     /**
      * 기존 설명(Lore)의 끝에 한 줄을 추가합니다.
@@ -148,10 +107,7 @@ public class ItemBuilder {
      * @param line 추가할 Lore (TextComponent)
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder addLore(@NotNull TextComponent line) {
-        lore.add(line);
-        return this;
-    }
+    ItemBuilder addLore(@NotNull TextComponent line);
 
     /**
      * 기존 설명(Lore)의 끝에 문자열 한 줄을 추가합니다.
@@ -161,9 +117,7 @@ public class ItemBuilder {
      * @param line 추가할 문자열
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder addLore(@NotNull String line) {
-        return addLore(TextComponent.of(line).mm());
-    }
+    ItemBuilder addLore(@NotNull String line);
 
     /**
      * 아이템의 수량을 설정합니다.
@@ -171,10 +125,7 @@ public class ItemBuilder {
      * @param amount 설정할 수량
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder amount(int amount) {
-        item.setAmount(amount);
-        return this;
-    }
+    ItemBuilder amount(int amount);
 
     /**
      * 아이템에 플래그(ItemFlag)를 추가합니다.
@@ -182,20 +133,14 @@ public class ItemBuilder {
      * @param flags 추가할 플래그 목록
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder flag(@NotNull ItemFlag... flags) {
-        meta.addItemFlags(flags);
-        return this;
-    }
+    ItemBuilder flag(@NotNull ItemFlag... flags);
 
     /**
      * 아이템의 모든 플래그를 숨깁니다 (인챈트, 속성, 물약 효과 등).
      *
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder hideAllFlags() {
-        meta.addItemFlags(ItemFlag.values());
-        return this;
-    }
+    ItemBuilder hideAllFlags();
 
     /**
      * 아이템의 파괴 불가(Unbreakable) 여부를 설정합니다.
@@ -203,10 +148,7 @@ public class ItemBuilder {
      * @param unbreakable true면 파괴 불가, false면 내구도 적용
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder unbreakable(boolean unbreakable) {
-        meta.setUnbreakable(unbreakable);
-        return this;
-    }
+    ItemBuilder unbreakable(boolean unbreakable);
 
     /**
      * 아이템에 인챈트 광택(Glow) 효과를 강제로 부여합니다.
@@ -215,10 +157,7 @@ public class ItemBuilder {
      *
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder glow() {
-        meta.setEnchantmentGlintOverride(true);
-        return this;
-    }
+    ItemBuilder glow();
 
     /**
      * 아이템의 커스텀 모델 데이터(CustomModelData)를 설정합니다.
@@ -228,11 +167,7 @@ public class ItemBuilder {
      * @param data 모델 데이터 정수 값
      * @return 이 ItemBuilder 인스턴스
      */
-    @SuppressWarnings("deprecation")
-    public ItemBuilder modelData(int data) {
-        meta.setCustomModelData(data);
-        return this;
-    }
+    ItemBuilder modelData(int data);
 
     /**
      * 아이템에 인챈트를 추가합니다.
@@ -241,10 +176,7 @@ public class ItemBuilder {
      * @param level   인챈트 레벨
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder enchant(@NotNull Enchantment enchant, int level) {
-        meta.addEnchant(enchant, level, true);
-        return this;
-    }
+    ItemBuilder enchant(@NotNull Enchantment enchant, int level);
 
     /**
      * 빌더 체인 중간에 임의의 작업을 수행합니다.
@@ -254,10 +186,7 @@ public class ItemBuilder {
      * @param consumer 현재 빌더 인스턴스를 사용하는 Consumer
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder modify(@NotNull Consumer<ItemBuilder> consumer) {
-        consumer.accept(this);
-        return this;
-    }
+    ItemBuilder modify(@NotNull Consumer<ItemBuilder> consumer);
 
     /**
      * 특정 {@link ItemMeta} 하위 타입을 안전하게 수정합니다.
@@ -269,13 +198,7 @@ public class ItemBuilder {
      * @param <M>       메타 타입
      * @return 이 ItemBuilder 인스턴스
      */
-    @SuppressWarnings("unchecked")
-    public <M extends ItemMeta> ItemBuilder editMeta(@NotNull Class<M> metaClass, @NotNull Consumer<M> consumer) {
-        if (metaClass.isInstance(meta)) {
-            consumer.accept((M) meta);
-        }
-        return this;
-    }
+    <M extends ItemMeta> ItemBuilder editMeta(@NotNull Class<M> metaClass, @NotNull Consumer<M> consumer);
 
     /**
      * 아이템의 손상도(Damage)를 설정합니다. 내구도가 있는 아이템에 적용됩니다.
@@ -283,9 +206,7 @@ public class ItemBuilder {
      * @param damage 손상도 값
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder damage(int damage) {
-        return editMeta(Damageable.class, m -> m.setDamage(damage));
-    }
+    ItemBuilder damage(int damage);
 
     /**
      * 가죽 갑옷의 색상을 설정합니다.
@@ -293,9 +214,7 @@ public class ItemBuilder {
      * @param color 적용할 Bukkit Color
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder armorColor(@NotNull Color color) {
-        return editMeta(LeatherArmorMeta.class, m -> m.setColor(color));
-    }
+    ItemBuilder armorColor(@NotNull Color color);
 
     /**
      * 플레이어 머리(Skull) 아이템의 주인을 설정합니다.
@@ -303,9 +222,7 @@ public class ItemBuilder {
      * @param player 머리의 주인이 될 플레이어
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder skullOwner(@NotNull OfflinePlayer player) {
-        return editMeta(SkullMeta.class, m -> m.setOwningPlayer(player));
-    }
+    ItemBuilder skullOwner(@NotNull OfflinePlayer player);
 
     /**
      * Base64 인코딩된 텍스처 값을 사용하여 머리 스킨을 설정합니다.
@@ -315,13 +232,7 @@ public class ItemBuilder {
      * @param base64 Base64 텍스처 문자열
      * @return 이 ItemBuilder 인스턴스
      */
-    public ItemBuilder skullTexture(@NotNull String base64) {
-        return editMeta(SkullMeta.class, m -> {
-            PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
-            profile.setProperty(new ProfileProperty("textures", base64));
-            m.setPlayerProfile(profile);
-        });
-    }
+    ItemBuilder skullTexture(@NotNull String base64);
 
     /**
      * PersistentDataContainer(PDC)에 데이터를 저장합니다.
@@ -331,20 +242,12 @@ public class ItemBuilder {
      * @return 이 ItemBuilder 인스턴스
      * @see PDCUtil#apply(ItemMeta, Map)
      */
-    public ItemBuilder pdc(@NotNull String key, @NotNull Object value) {
-        pdc.put(key, value);
-        return this;
-    }
+    ItemBuilder pdc(@NotNull String key, @NotNull Object value);
 
     /**
      * 설정된 모든 속성을 적용하여 최종 {@link ItemStack}을 생성합니다.
      *
      * @return 생성된 ItemStack
      */
-    public ItemStack build() {
-        ItemMetaApplier.apply(meta, name, lore);
-        PDCUtil.apply(meta, pdc);
-        item.setItemMeta(meta);
-        return item;
-    }
+    ItemStack build();
 }

@@ -16,8 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class EnchantmentRegistry implements MappedRegistry<SnowEnchantment> {
     private final Map<SnowKey, SnowEnchantment> registeredEnchants = new ConcurrentHashMap<>();
 
-    public EnchantmentRegistry() {
-    }
+    private EnchantmentRegistry() {}
 
     @Override
     public void register(SnowKey key, SnowEnchantment target) {

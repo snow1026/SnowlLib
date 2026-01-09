@@ -1,4 +1,4 @@
-package io.github.snow1026.snowlib.registry.internal;
+package io.github.snow1026.snowlib.internal.registry;
 
 import io.github.snow1026.snowlib.registry.MappedRegistry;
 import io.github.snow1026.snowlib.registry.Registrable;
@@ -12,9 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class SnowRegistryAccess implements RegistryAccess {
     private static final Map<RegistryKey, MappedRegistry<?>> registries = new ConcurrentHashMap<>();
 
-    /**
-     * 새로운 레지스트리를 시스템에 등록합니다. (라이브러리 초기화 단계에서 사용)
-     */
     public static <T extends Registrable> void registerRegistry(RegistryKey key, MappedRegistry<T> registry) {
         registries.put(key, registry);
     }

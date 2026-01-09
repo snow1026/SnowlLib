@@ -1,5 +1,6 @@
-package io.github.snow1026.snowlib.api.event;
+package io.github.snow1026.snowlib.api.event.debug;
 
+import io.github.snow1026.snowlib.api.event.EventKey;
 import org.bukkit.event.Event;
 
 import java.util.Collections;

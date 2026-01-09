@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings({"unchecked", "unused"})
 public final class Reflection {
-
     /** 현재 서버의 버전 문자열 (예: v1_20_R1) */
     private static final String VERSION_STRING;
     /** NMS 패키지 접두사 (net.minecraft 또는 버전 포함 경로) */

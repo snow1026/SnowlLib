@@ -7,7 +7,6 @@ import io.github.snow1026.snowlib.SnowLibrary;
  * 특정 레지스트리를 식별하고, 해당 레지스트리가 담고 있는 타입을 정의하는 키입니다.
  */
 public record RegistryKey(SnowKey key) {
-    public static final RegistryKey PACKET = new RegistryKey("packet");
     public static final RegistryKey ATTRIBUTE = new RegistryKey("attribute");
     public static final RegistryKey COMMAND = new RegistryKey("command");
     public static final RegistryKey ENCHANTMENT = new RegistryKey("enchantment");

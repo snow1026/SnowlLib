@@ -1,10 +1,10 @@
 package io.github.snow1026.snowlib.internal.gui;
 
+import io.github.snow1026.snowlib.SnowLibrary;
 import io.github.snow1026.snowlib.api.gui.GUI;
 import io.github.snow1026.snowlib.api.gui.GUIManager;
 import io.github.snow1026.snowlib.api.gui.GUISlot;
 import io.github.snow1026.snowlib.api.gui.event.*;
-import io.github.snow1026.snowlib.api.lifecycle.EventRegistry;
 import io.github.snow1026.snowlib.utils.Adventure;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -132,7 +132,7 @@ public final class SnowGUI implements GUI, InventoryHolder {
     @Override
     public GUI updateInterval(long ticks, Consumer<GUI> task) {
         if (this.updateTask != null) this.updateTask.cancel();
-        this.updateTask = Bukkit.getScheduler().runTaskTimer(EventRegistry.getLifecycle().plugin(), () -> task.accept(this), ticks, ticks);
+        this.updateTask = Bukkit.getScheduler().runTaskTimer(SnowLibrary.snowlibrary(), () -> task.accept(this), ticks, ticks);
         return this;
     }
 

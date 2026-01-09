@@ -16,8 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class AttributeRegistry implements MappedRegistry<SnowAttribute> {
     private final Map<SnowKey, SnowAttribute> registeredAttributes = new ConcurrentHashMap<>();
 
-    public AttributeRegistry() {
-    }
+    private AttributeRegistry() {}
 
     @Override
     public void register(SnowKey key, SnowAttribute target) {

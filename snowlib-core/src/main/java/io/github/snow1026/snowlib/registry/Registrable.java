@@ -6,6 +6,4 @@ package io.github.snow1026.snowlib.registry;
  * 이 인터페이스를 구현하는 객체는 {@link RegistryKey}를 통해 관리될 수 있습니다.
  */
 public interface Registrable {
-    // 필요한 경우 식별자(ID)를 반환하는 메서드를 추가할 수 있습니다.
-    // SnowKey getKey();
 }

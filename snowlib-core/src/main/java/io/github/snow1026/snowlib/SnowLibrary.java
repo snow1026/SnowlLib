@@ -6,7 +6,7 @@ import io.github.snow1026.snowlib.api.enchantment.SnowEnchantment;
 import io.github.snow1026.snowlib.api.gui.GUIListener;
 import io.github.snow1026.snowlib.internal.registry.SnowRegistryAccess;
 import io.github.snow1026.snowlib.internal.task.SnowTasker;
-import io.github.snow1026.snowlib.registry.MappedRegistry;
+import io.github.snow1026.snowlib.registry.SnowRegistry;
 import io.github.snow1026.snowlib.registry.RegistryAccess;
 import io.github.snow1026.snowlib.registry.RegistryKey;
 import io.github.snow1026.snowlib.registry.internal.*;
@@ -25,9 +25,9 @@ public final class SnowLibrary extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new GUIListener(), snowlibrary());
 
-        SnowRegistryAccess.registerRegistry(RegistryKey.COMMAND, (MappedRegistry<Sommand>) Reflection.newInstance(CommandRegistry.class));
-        SnowRegistryAccess.registerRegistry(RegistryKey.ATTRIBUTE, (MappedRegistry<SnowAttribute>) Reflection.newInstance(AttributeRegistry.class));
-        SnowRegistryAccess.registerRegistry(RegistryKey.ENCHANTMENT, (MappedRegistry<SnowEnchantment>) Reflection.newInstance(EnchantmentRegistry.class));
+        SnowRegistryAccess.registerRegistry(RegistryKey.COMMAND, (SnowRegistry<Sommand>) Reflection.newInstance(CommandRegistry.class));
+        SnowRegistryAccess.registerRegistry(RegistryKey.ATTRIBUTE, (SnowRegistry<SnowAttribute>) Reflection.newInstance(AttributeRegistry.class));
+        SnowRegistryAccess.registerRegistry(RegistryKey.ENCHANTMENT, (SnowRegistry<SnowEnchantment>) Reflection.newInstance(EnchantmentRegistry.class));
     }
 
     public static SnowLibrary snowlibrary() {

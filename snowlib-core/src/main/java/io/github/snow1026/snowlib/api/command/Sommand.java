@@ -4,11 +4,9 @@ import io.github.snow1026.snowlib.SnowKey;
 import io.github.snow1026.snowlib.SnowLibrary;
 import io.github.snow1026.snowlib.api.command.argument.SuggestionProvider;
 import io.github.snow1026.snowlib.internal.command.SnowSommand;
-import io.github.snow1026.snowlib.internal.command.CommandRegister;
-import io.github.snow1026.snowlib.registry.MappedRegistry;
+import io.github.snow1026.snowlib.registry.SnowRegistry;
 import io.github.snow1026.snowlib.registry.Registrable;
 import io.github.snow1026.snowlib.registry.RegistryKey;
-import io.github.snow1026.snowlib.registry.internal.CommandRegistry;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +38,7 @@ public interface Sommand extends Registrable {
      * 구성된 명령어 트리를 NMS 디스패처에 최종적으로 등록합니다.
      */
     default void register() {
-        MappedRegistry<Sommand> registry = SnowLibrary.registryAccess().lookup(RegistryKey.COMMAND);
+        SnowRegistry<Sommand> registry = SnowLibrary.registryAccess().lookup(RegistryKey.COMMAND);
         registry.register(new SnowKey(SnowLibrary.snowlibrary(), this.getName()), this);
     }
 

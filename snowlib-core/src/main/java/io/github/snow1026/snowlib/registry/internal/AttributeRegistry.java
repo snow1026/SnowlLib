@@ -3,7 +3,7 @@ package io.github.snow1026.snowlib.registry.internal;
 import io.github.snow1026.snowlib.SnowKey;
 import io.github.snow1026.snowlib.api.attribute.SnowAttribute;
 import io.github.snow1026.snowlib.internal.attribute.AttributeRegister;
-import io.github.snow1026.snowlib.registry.MappedRegistry;
+import io.github.snow1026.snowlib.registry.SnowRegistry;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 서버에 생성된 커스텀 어트리뷰트들을 등록하고 조회하는 레지스트리입니다.
  */
-public final class AttributeRegistry implements MappedRegistry<SnowAttribute> {
+public final class AttributeRegistry implements SnowRegistry<SnowAttribute> {
     private final Map<SnowKey, SnowAttribute> registeredAttributes = new ConcurrentHashMap<>();
 
     private AttributeRegistry() {}

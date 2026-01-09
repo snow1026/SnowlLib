@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @param <T> 등록될 객체의 타입 (Registrable 상속)
  */
-public interface MappedRegistry<T extends Registrable> {
+public interface SnowRegistry<T extends Registrable> {
 
     /**
      * 객체를 레지스트리에 등록합니다.

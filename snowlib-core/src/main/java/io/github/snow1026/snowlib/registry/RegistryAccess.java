@@ -3,7 +3,7 @@ package io.github.snow1026.snowlib.registry;
 import java.util.Optional;
 
 /**
- * 시스템에 존재하는 다양한 {@link MappedRegistry}들을 조회하고 관리하는 중앙 접근 지점입니다.
+ * 시스템에 존재하는 다양한 {@link SnowRegistry}들을 조회하고 관리하는 중앙 접근 지점입니다.
  */
 public interface RegistryAccess {
 
@@ -17,7 +17,7 @@ public interface RegistryAccess {
      * @return 해당 타입의 레지스트리
      * @throws IllegalArgumentException 해당 키에 매핑된 레지스트리가 없을 경우
      */
-    <T extends Registrable> MappedRegistry<T> lookup(RegistryKey key);
+    <T extends Registrable> SnowRegistry<T> lookup(RegistryKey key);
 
     /**
      * 주어진 키에 해당하는 레지스트리를 Optional로 반환합니다.
@@ -26,5 +26,5 @@ public interface RegistryAccess {
      * @param <T> 타입
      * @return Optional 레지스트리
      */
-    <T extends Registrable> Optional<MappedRegistry<T>> find(RegistryKey key);
+    <T extends Registrable> Optional<SnowRegistry<T>> find(RegistryKey key);
 }

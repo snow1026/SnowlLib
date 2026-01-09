@@ -3,7 +3,7 @@ package io.github.snow1026.snowlib.registry.internal;
 import io.github.snow1026.snowlib.SnowKey;
 import io.github.snow1026.snowlib.api.command.Sommand;
 import io.github.snow1026.snowlib.internal.command.CommandRegister;
-import io.github.snow1026.snowlib.registry.MappedRegistry;
+import io.github.snow1026.snowlib.registry.SnowRegistry;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 서버의 커스텀 명령어들을 등록하고 조회하는 레지스트리입니다.
  */
-public final class CommandRegistry implements MappedRegistry<Sommand> {
+public final class CommandRegistry implements SnowRegistry<Sommand> {
     private final Map<SnowKey, Sommand> registeredCommands = new ConcurrentHashMap<>();
 
     private CommandRegistry() {}

@@ -56,7 +56,7 @@ dependencies {
 Brigadier 스타일의 트리 기반 커맨드 시스템
 
 ``` java
-SnowSommand.create("test")
+Sommand.create("test")
     .executes(ctx -> {
         ctx.sender().sendMessage("Hello SnowLib");
     })
@@ -68,7 +68,7 @@ SnowSommand.create("test")
 ## 2️⃣ 이벤트 시스템 (SnowEvent)
 
 ``` java
-SnowEvents.listen(PlayerJoinEvent.class, event -> {
+Events.listen(PlayerJoinEvent.class, event -> {
     e.getPlayer().sendMessage("관리자 입장");
     })
     .filter(e -> e.getPlayer().isOp())
@@ -79,7 +79,7 @@ SnowEvents.listen(PlayerJoinEvent.class, event -> {
 ## 3️⃣ GUI 프레임워크
 
 ``` java
-SnowGUI gui = SnowGUI.create(3, "메뉴");
+GUI gui = GUI.create(3, "메뉴");
 gui.open(player);
 ```
 
@@ -88,7 +88,7 @@ gui.open(player);
 ## 4️⃣ 아이템 시스템
 
 ``` java
-ItemStack item = SnowItemBuilder.of(Material.DIAMOND_SWORD)
+ItemStack item = ItemBuilder.of(Material.DIAMOND_SWORD)
     .name("§bSnow Sword")
     .lore("강력한 검")
     .build();
@@ -112,7 +112,7 @@ SnowLib 전반을 관통하는 핵심 인프라
 ## 7️⃣ 태스크 시스템
 
 ``` java
-SnowTasker.sync()
+Tasker.sync()
     .delay(20)
     .repeat(20)
     .run(() -> Bukkit.broadcastMessage("Tick"));

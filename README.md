@@ -1,4 +1,4 @@
-# ❄ SnowLib
+# SnowLib
 
 > **SnowLib**는 Bukkit / Spigot / Paper 환경에서\
 > **고급 플러그인 개발자**를 위해 설계된 **모듈형 라이브러리

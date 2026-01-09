@@ -37,7 +37,7 @@
 ``` kotlin
 
 repositories {
-        mavenCentral()
+    mavenCentral()
 }
 
 dependencies {

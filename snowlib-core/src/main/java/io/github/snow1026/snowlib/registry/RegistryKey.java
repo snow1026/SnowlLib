@@ -29,10 +29,9 @@ public record RegistryKey(SnowKey key) {
      * 새로운 레지스트리 키를 생성합니다.
      *
      * @param key 식별자
-     * @param <E> 레지스트리 타입
      * @return 생성된 RegistryKey
      */
-    public static <E extends Registrable> RegistryKey create(SnowKey key) {
+    public static RegistryKey create(SnowKey key) {
         return new RegistryKey(key);
     }
 
